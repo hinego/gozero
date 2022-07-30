@@ -30,6 +30,7 @@ type handlerInfo struct {
 	Call               string
 	HasResp            bool
 	HasRequest         bool
+	PkgPath            string
 }
 
 func genHandler(dir, rootPkg string, cfg *config.Config, group spec.Group, route spec.Route) error {
@@ -45,7 +46,7 @@ func genHandler(dir, rootPkg string, cfg *config.Config, group spec.Group, route
 	if err != nil {
 		return err
 	}
-
+	split := strings.Split(parentPkg, "/")
 	return doGenToFile(dir, handler, cfg, group, route, handlerInfo{
 		PkgName:        pkgName,
 		ImportPackages: genHandlerImports(group, route, parentPkg),
@@ -56,6 +57,7 @@ func genHandler(dir, rootPkg string, cfg *config.Config, group spec.Group, route
 		Call:           strings.Title(strings.TrimSuffix(handler, "Handler")),
 		HasResp:        len(route.ResponseTypeName()) > 0,
 		HasRequest:     len(route.RequestTypeName()) > 0,
+		PkgPath:        strings.Join(split[0:3], "/"),
 	})
 }
 
